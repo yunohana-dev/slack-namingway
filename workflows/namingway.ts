@@ -36,7 +36,8 @@ NamingwayWorkflow.addStep(
 const renameStep = NamingwayWorkflow.addStep(
   RenameFunction,
   {
-    dest: NamingwayWorkflow.inputs.message,
+    channel_id: NamingwayWorkflow.inputs.channel_id,
+    message: NamingwayWorkflow.inputs.message,
   },
 );
 

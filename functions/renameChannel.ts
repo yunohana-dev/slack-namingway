@@ -7,12 +7,16 @@ export const RenameFunction = DefineFunction({
   source_file: "functions/renameChannel.ts",
   input_parameters: {
     properties: {
-      dest: {
+      channel_id: {
+        type: Schema.slack.types.channel_id,
+        description: "target channel id",
+      },
+      message: {
         type: Schema.types.string,
-        description: "target channel name",
+        description: "message",
       },
     },
-    required: ["dest"],
+    required: ["channel_id", "message"],
   },
   output_parameters: {
     properties: {
@@ -27,21 +31,20 @@ export const RenameFunction = DefineFunction({
 
 export default SlackFunction(
   RenameFunction,
-  async ({ inputs }) => {
-    console.log(`inputs: ${JSON.stringify(inputs)}`);
-    if (await rename()) {
+  async ({ inputs, client }) => {
+    // メッセージからメンションを削除
+    const content = inputs.message.replaceAll(/\<\@.+?\>/g, " ").trim();
+    const res = await client.conversations.rename({
+      channel: inputs.channel_id,
+      name: content,
+    });
+    if (res.ok) {
       return {
-        outputs: { result: "error" },
+        outputs: { result: "フン　フフーン！" },
       };
     }
     return {
-      outputs: { result: "success" },
+      outputs: { result: `${res.error}` },
     };
   },
 );
-
-const rename = async (): Promise<boolean> => {
-  // FIXME チャネル名変更の処理
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return Math.floor(Math.random() * 2) === 0;
-};

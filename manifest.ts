@@ -21,5 +21,9 @@ export default Manifest({
     "chat:write",
     "chat:write.public",
     "channels:read",
+    "channels:manage",
+    "groups:write",
+    "im:write",
+    "mpim:write",
   ],
 });
